@@ -2,12 +2,15 @@ package org.janardhan.userservice.controller;
 
 import org.janardhan.userservice.data.UserEntity;
 import org.janardhan.userservice.dto.UserDto;
+import org.janardhan.userservice.model.ResponseUser;
 import org.janardhan.userservice.model.User;
 import org.janardhan.userservice.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -28,12 +31,13 @@ public class UserController {
   }
 
   @PostMapping
-  public String registerUser(@RequestBody User user){
+  public ResponseEntity<ResponseUser> registerUser(@RequestBody User user){
 
     ModelMapper modelMapper = new ModelMapper();
     modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     UserDto userDto = modelMapper.map(user, UserDto.class);
-    userService.createUser(userDto);
-    return "user registered";
+    UserDto returnedUserDto =userService.createUser(userDto);
+    ResponseUser responseUser = modelMapper.map(returnedUserDto, ResponseUser.class);
+    return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
   }
 }

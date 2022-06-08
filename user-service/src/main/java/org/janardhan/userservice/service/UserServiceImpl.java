@@ -3,6 +3,7 @@ package org.janardhan.userservice.service;
 import org.janardhan.userservice.data.UserEntity;
 import org.janardhan.userservice.data.UserRepository;
 import org.janardhan.userservice.dto.UserDto;
+import org.janardhan.userservice.model.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
@@ -25,6 +26,8 @@ public class UserServiceImpl implements UserService {
     UserEntity userEntity = modelMapper.map(userDetails, UserEntity.class);
     userEntity.setEncryptedPassword("test");
     userRepository.save(userEntity);
-    return userDetails;
+
+    UserDto returnUser = modelMapper.map(userEntity, UserDto.class);
+    return returnUser;
   }
 }
